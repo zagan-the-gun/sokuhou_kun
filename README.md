@@ -5,9 +5,9 @@ EPICおぢから無料ゲーム頂きおぢのためのツール
 # インストール
 考えるな！感じろ！
 ```
-$ python3.10 -m venv venv3.10
-$ source venv3.10/bin/activate
-(venv3.10)$ pip install -r requirements.txt
+$ python3.11 -m venv venv3.11
+$ source venv3.11/bin/activate
+(venv3.11)$ pip install -r requirements.txt
 ```
 
 # 仕組み
