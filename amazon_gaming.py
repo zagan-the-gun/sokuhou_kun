@@ -33,9 +33,12 @@ soup = BeautifulSoup(driver.page_source, 'lxml')
 # ダータゲームリスト取得
 ul_tag = soup.find('ul', attrs={'class':re.compile('grid-carousel__content')})
 
+_game_list=[]
+_game_dict={}
 for li_tag in ul_tag.find_all('li'):
     # ガッチャ！
     url = 'https://gaming.amazon.com' + li_tag.find('a').get('href').split('?')[0]
+    _game_dict['url'] = url
 
     # ダータゲーム詳細画面から配布終了日(deadline)を取ってくる、ゲームリストに含めておけよメンドくせーな！
     driver.get(url)
@@ -49,34 +52,25 @@ for li_tag in ul_tag.find_all('li'):
     detail_soup = BeautifulSoup(driver.page_source, 'lxml')
     _date = detail_soup.find('div', {'class': 'availability-date'}).find('span', {'class': 'tw-amazon-ember tw-amazon-ember-bold tw-bold tw-font-size-6'}).get_text()
     date = datetime.strptime(_date, '%b %d, %Y').date()
+    _game_dict['date'] = str(date)
+    
+    _game_list.append(_game_dict.copy())
 
-#    print(date)
-#    print(url)
+    print(date)
+    print(url)
 
 # お掃除
 driver.close()
 driver.quit()
 
 # 速報くんに連絡だ！
-"""
-for f in free_game:
-    #print(f)
-#    print('https://www.epicgames.com' + f.get('href') + f.find('time', attrs={'data-component':'Time'}).get('datetime'))
-#    print('https://www.epicgames.com' + f.get('href'))
-#    print(f.find('time', attrs={'data-component':'Time'}).get('datetime'))
-#    print(f.find('div', attrs={'data-testid':'direction-auto'}).get_text())
+for g in _game_list:
     data = json.dumps({
-        'unique_check' : 'https://www.epicgames.com' + f.get('href') + f.find('time', attrs={'data-component':'Time'}).get('datetime'),
-        'url'          : 'https://www.epicgames.com' + f.get('href'),
-        'date'         : f.find('time', attrs={'data-component':'Time'}).get('datetime'),
-        'name'         : f.find('div', attrs={'data-testid':'direction-auto'}).get_text(),
-        'platform'     : 'epic',
-        'delivery'     : False,
+        'url'      : g['url'],
+        'deadline' : g['date'],
+        'platform' : 'amazon',
+        'is_sent'  : False
     })
-    result = requests.post("https://localhost:8000/games/", data)
+    result = requests.post("http://192.168.1.5/games/", data)
     print(result)
 
-
-# kill `ps ax | grep chrome | awk '{print $1}'`
-
-"""
