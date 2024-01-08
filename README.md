@@ -12,8 +12,8 @@ $ source venv3.11/bin/activate
 
 # 登場人物
 ## amazon_gaming.pyなど
-ヘッドレスな selenium で ゲーム配りおぢ から新着無料ゲームの情報をまるっと頂き男子！  
-FastAPIに新着無料ゲーム情報をPOSTする  
+ヘッドレスな selenium で ゲーム配りおぢ から無料ゲームの情報をまるっと頂き男子！  
+FastAPIに無料ゲーム情報をPOSTする  
 新規追加なら未配信フラグが付与される  
 crontab で実行する  
 
@@ -28,7 +28,6 @@ FastAPI に未配信の新着無料ゲーム情報があればディスコに流
 crontab で実行する  
 
 # 使い方
-
 ## chromedriver のインストール
 ChromeDriverのページ
 https://chromedriver.chromium.org/home
@@ -69,10 +68,26 @@ $ ./chrome --headless --disable-gpu --dump-dom http://the-menz.com/
 htmlが表示されれば成功!
 
 
+# Alembic
+インストール
+```
+$ pip install alembic
+```
 
+初期化
+```
+$ alembic init alembic
+```
 
+マイグレーション
+```
+$ alembic revision -m "create games table"
+```
 
-
+alembic/versions/ 配下に新規作成されたファイルを編集
+```
+$ alembic upgrade head
+```
 
 
 
