@@ -25,7 +25,7 @@ def create_game(
 ):
     return crud.create_game(db=db, game=game)
 
-@app.get("/games/", response_model=List[schemas.GameCreateSchema])
+@app.get("/games/", response_model=List[schemas.GameSchema])
 def read_games(skip: int = 0, limit: int = 100, is_sent: bool = False, db: Session = Depends(get_db)):
     games = crud.get_games(db, skip=skip, limit=limit, is_sent=is_sent)
     return games
