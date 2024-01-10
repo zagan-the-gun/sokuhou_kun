@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes: # バインドマウント、ディレクトリ内をcode/にマウントするので実行中にファイル書き換えが出来る
+      - .:/code
+        #    environment:
+        #      FLASK_ENV: development
+
