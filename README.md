@@ -6,7 +6,6 @@
 ## amazon_gaming.pyなど
 ヘッドレスな selenium で ゲーム配りおぢ から無料ゲームの情報をまるっと頂き男子！  
 FastAPIに無料ゲーム情報をPOSTする  
-新規追加なら未配信フラグが付与される  
 crontab で実行する  
 
 ## FastAPI
