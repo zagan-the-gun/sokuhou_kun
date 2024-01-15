@@ -6,7 +6,7 @@ attrs==23.2.0
 beautifulsoup4==4.12.2
 behave==1.2.6
 certifi==2023.11.17
-cffi==1.15.0
+cffi==1.16.0
 chardet==5.2.0
 charset-normalizer==3.3.2
 click==8.0.4
@@ -81,7 +81,7 @@ typing_extensions==4.1.1
 undetected-chromedriver==3.5.4
 urllib3==2.1.0
 uvicorn==0.17.5
-uvloop==0.16.0
+uvloop==0.19.0
 watchgod==0.7
 websocket-client==1.7.0
 websockets==10.2
