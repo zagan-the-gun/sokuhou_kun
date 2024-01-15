@@ -6,7 +6,7 @@ RUN apk add --no-cache gcc musl-dev linux-headers
 # インストール
 COPY requirements.txt requirements.txt
 COPY discord /etc/periodic/15min/
-COPY amazon_gaming /etc/periodic/15min/
+COPY amazon_gaming /etc/periodic/daily/
 
 RUN <<EOF
 #FastAPIインストール
