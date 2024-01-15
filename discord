@@ -1,0 +1,5 @@
+echo #!/bin/sh
+
+cd /code/
+python discord.py
+
