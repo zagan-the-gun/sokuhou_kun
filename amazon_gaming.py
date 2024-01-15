@@ -57,16 +57,20 @@ for li_tag in ul_tag.find_all('li'):
 #    driver.set_window_size(1280,1024)
 #    driver.save_screenshot('screenshot.png')
 
-    # 日付だけ取ってくりゃいーよ
+    # 日付取る
     detail_soup = BeautifulSoup(driver.page_source, 'lxml')
     _date = detail_soup.find('div', {'class': 'availability-date'}).find('span', {'class': 'tw-amazon-ember tw-amazon-ember-bold tw-bold tw-font-size-6'}).get_text()
     date = datetime.strptime(_date, '%b %d, %Y').date()
     _game_dict['date'] = str(date)
-    
+    # ゲーム名
+    _name = detail_soup.find('div', {'data-a-target': 'buy-box_title'}).find('h1').text
+    _game_dict['name'] = _name
+
     _game_list.append(_game_dict.copy())
 
-    print(date)
     print(url)
+    print(date)
+    print(_name)
 
 # お掃除
 driver.close()
@@ -77,6 +81,7 @@ for g in _game_list:
     data = json.dumps({
         'url'      : g['url'],
         'deadline' : g['date'],
+        'name'     : g['name'],
         'platform' : 'amazon',
         'is_sent'  : False
     })

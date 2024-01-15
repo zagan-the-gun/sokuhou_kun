@@ -18,6 +18,7 @@ pip install -r requirements.txt
 # ChromeDriverインストール
 apk add chromium chromium-chromedriver
 
+chmod +x /etc/periodic/15min/*
 EOF
 
 COPY . .
