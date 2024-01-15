@@ -24,6 +24,8 @@ DISCORDに通知を投げる場合はAPIトークンをDISCORD_TOKENというフ
 $ vi DISCORD_TOKEN
 ```
 
+# ローカルにインストール
+
 ## FastAPIなどインストール
 考えるな！感じろ！
 ```
@@ -33,7 +35,7 @@ $ source venv3.10/bin/activate
 ```
 
 ## FastAPI 起動
-自分で適当にサービス化しよう！
+自分で適当にデーモン化しよう！
 ```
 $ uvicorn sql_app.main:app --reload
 ```
@@ -50,23 +52,25 @@ https://chromedriver.chromium.org/home
 このようなファイルをDLして使っても良い  
 https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.109/linux64/chrome-linux64.zip  
 https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.109/linux64/chromedriver-linux64.zip  
-面倒ならサクッとapt
-```
-$ apt install chromium chromium-chromedriver
-```
   
 コンソールにhtmlが表示されれば成功!  
 ```
 $ ./chrome --headless --disable-gpu --dump-dom http://the-menz.com/
 ```
-
-# Docker起動
-インストール自分でやるのめんどくさいなーって場合は手っ取り早く Docker で起動しちゃおう！
+  
+面倒ならサクッとapt install
+```
+$ apt install chromium chromium-chromedriver
+```
+  
+# Dockerでインストール
+インストール自分でやるのめんどくさいなーって場合は手っ取り早く Docker で起動しちゃおう！  
+因みにM1 Macとかだとダメなはず、インテル入ってる？
 ```
 $ docker compose up
 ```
 
-# Alembic
+# Alembic インストールメモ
 インストール
 ```
 $ pip install alembic
