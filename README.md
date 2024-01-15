@@ -32,12 +32,16 @@ crontab で実行する
 ChromeDriverのページ
 https://chromedriver.chromium.org/home
 
-CHromeとCHromeDriverのセット
+CHromeとCHromeDriverのダウンロード
 https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.109/linux64/chrome-linux64.zip
+wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.109/linux64/chromedriver-linux64.zip
 
 
 $ wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.109/linux64/chrome-linux64.zip
 $ unzip chrome-linux64.zip
+
+$ wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.109/linux64/chromedriver-linux64.zip
+$ unzip chromedriver-linux64.zip
 
 $ ./chrome
 ./chrome: error while loading shared libraries: libnss3.so: cannot open shared object file: No such file or directory
@@ -90,9 +94,9 @@ $ alembic upgrade head
 ```
 
 
-
-
 自分で適当にサービス化しよう！
 ```
 $ uvicorn sql_app.main:app --reload
 ```
+
+

@@ -3,6 +3,7 @@
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 from time import sleep
 
@@ -17,7 +18,15 @@ from datetime import datetime
 
 # selenium初期化
 options = Options()
+options.add_argument('--no-sandbox')
 options.add_argument('--headless')
+
+#CHROME_BIN = "./chrome-linux64/chrome"
+#options.binary_location = CHROME_BIN
+#CHROME_DRIVER = "./chromedriver-linux64/chromedriver"
+#service = Service(executable_path=CHROME_DRIVER)
+#driver = webdriver.Chrome(service=service, options=options)
+
 driver = webdriver.Chrome(options=options)
 
 # ターゲット♡
@@ -74,3 +83,5 @@ for g in _game_list:
     result = requests.post("http://192.168.1.5/games/", data)
     print(result)
 
+# バグでプロセスが死に切らない時の対応
+#kill `ps ax | grep chromium | awk '{print $1}'`
