@@ -24,6 +24,12 @@ DISCORDに通知を投げる場合はAPIトークンをDISCORD_TOKENというフ
 $ vi DISCORD_TOKEN
 ```
 
+FastAPIのドメインやIPをDOMAINというファイルに保存しよう
+192.168.1.5とかね！
+```
+$ vi DOMAIN
+```
+
 # ローカルにインストール
 
 ## FastAPIなどインストール
