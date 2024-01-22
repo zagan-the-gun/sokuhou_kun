@@ -17,7 +17,17 @@ else:
     print('DISCORD_TOKEN not found')
     sys.exit(1)
 
-target_url = "http://192.168.1.5/games/?skip=0&limit=100&is_sent=false"
+# ドメインチェック
+if len(sys.argv) >= 3:
+    DISCORD_TOKEN = sys.argv[2]
+elif os.path.isfile('./DOMAIN'):
+    with open('./DOMAIN', 'r') as f:
+        DISCORD_TOKEN = f.read().splitlines()[0]
+else:
+    print('DOMAIN not found')
+    sys.exit(1)
+
+target_url = "http://" + DOMAIN + "/games/?skip=0&limit=100&is_sent=false"
 response = requests.get(target_url)
 game = json.loads(response.text)
 for g in game:
@@ -38,6 +48,6 @@ for g in game:
     data = json.dumps({
         'is_sent': True,
         })
-    result = requests.put("http://192.168.1.5/games/" + str(g['id']), data, headers=headers)
+    result = requests.put("http://" + DOMAIN + "/games/" + str(g['id']), data, headers=headers)
     print(result)
 

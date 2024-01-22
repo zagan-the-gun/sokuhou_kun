@@ -15,6 +15,19 @@ import json
 
 from datetime import datetime
 
+import os
+import sys
+
+
+# ドメインチェック
+if len(sys.argv) >= 2:
+    DISCORD_TOKEN = sys.argv[1]
+elif os.path.isfile('./DOMAIN'):
+    with open('./DOMAIN', 'r') as f:
+        DISCORD_TOKEN = f.read().splitlines()[0]
+else:
+    print('DOMAIN not found')
+    sys.exit(1)
 
 # selenium初期化
 options = Options()
@@ -85,7 +98,7 @@ for g in _game_list:
         'platform' : 'amazon',
         'is_sent'  : False
     })
-    result = requests.post("http://192.168.1.5/games/", data)
+    result = requests.post("http://" + DOMAIN + "/games/", data)
     print(result)
 
 # バグでプロセスが死に切らない時の対応
