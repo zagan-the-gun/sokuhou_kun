@@ -103,3 +103,9 @@ $ alembic upgrade head
 $ uvicorn sql_app.main:app --reload
 ```
 
+# Tips
+## バグでプロセスが死に切らない時の対応
+
+```shell
+kill `ps ax | grep chromium | awk '{print $1}'`
+```

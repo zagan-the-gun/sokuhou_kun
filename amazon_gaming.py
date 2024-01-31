@@ -118,6 +118,3 @@ driver.close()
 driver.quit()
 discord_token = settings()
 post_to_reporter(game_list, discord_token)
-
-# バグでプロセスが死に切らない時の対応
-# kill `ps ax | grep chromium | awk '{print $1}'`
