@@ -1,5 +1,7 @@
 """Epic Games Store 無料ゲーム取得 (公開 API)"""
 
+from __future__ import annotations
+
 import requests
 from datetime import datetime, timezone
 

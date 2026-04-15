@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import db
 from amazon_gaming import fetch_free_games as fetch_amazon
 from epic_games import fetch_free_games as fetch_epic
+from gamerpower import fetch_free_games as fetch_gamerpower
 from notifier import send_to_discord
 
 
@@ -39,6 +40,16 @@ def main():
             print(f"  {'[新着]' if is_new else '[既存]'} {g['name']}")
     except Exception as e:
         print(f"  Epic Games の取得に失敗: {e}")
+
+    print("=== GamerPower ===")
+    try:
+        gp_games = fetch_gamerpower()
+        print(f"  取得: {len(gp_games)} 件")
+        for g in gp_games:
+            is_new = db.upsert_game(**g)
+            print(f"  {'[新着]' if is_new else '[既存]'} {g['name']}")
+    except Exception as e:
+        print(f"  GamerPower の取得に失敗: {e}")
 
     # --- Discord 通知 ---
     unsent = db.get_unsent_games()
