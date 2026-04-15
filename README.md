@@ -2,104 +2,42 @@
 無料ゲーム頂き男子のためのツール  
 私たちは貰わされた！
 
-# 登場人物
-## amazon_gaming.pyなど
-ヘッドレスな selenium で ゲーム配りおぢ から無料ゲームの情報をまるっと頂き男子！  
-FastAPIに無料ゲーム情報をPOSTする  
-crontab で実行する  
+## 仕組み
+1. Amazon Gaming / Epic Games Store から無料ゲーム情報を取得
+2. SQLite に保存して重複チェック
+3. 新着があれば Discord に通知
 
-## FastAPI
-おぢから頂いた新着無料ゲーム情報をストックする  
-新規追加なら未配信フラグを付与して保存する  
-別に外部に公開する必要はない、どころかこんなもんローカルファイルに直接書けばいいんじゃないの？  
-まー、将来の拡張性に備えてね？  
+GitHub Actions で月水金 JST 12:00 に自動実行される。
 
-## discord.py
-FastAPI に未配信の新着無料ゲーム情報があればディスコに流す  
-crontab で実行する  
+## 構成
+| ファイル | 役割 |
+|----------|------|
+| `main.py` | エントリポイント |
+| `amazon_gaming.py` | Playwright で Amazon Gaming をスクレイプ |
+| `epic_games.py` | Epic の公開 API から無料ゲームを取得 |
+| `db.py` | SQLite 直接操作 |
+| `notifier.py` | Discord Webhook 通知 |
 
-# 使い方
-DISCORDに通知を投げる場合はAPIトークンをDISCORD_TOKENというファイルに保存しよう
-```
-$ vi DISCORD_TOKEN
-```
+## ローカルで動かす
 
-FastAPIのドメインやIPをDOMAINというファイルに保存しよう
-192.168.1.5とかね！
-```
-$ vi DOMAIN
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+playwright install chromium
 ```
 
-# ローカルにインストール
-
-## FastAPIなどインストール
-考えるな！感じろ！
+`.env` を作成:
 ```
-$ python3.10 -m venv venv3.10
-$ source venv3.10/bin/activate
-(venv3.10)$ pip install -r requirements.txt
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/xxxx/yyyy
 ```
 
-## FastAPI 起動
-自分で適当にデーモン化しよう！
-```
-$ uvicorn sql_app.main:app --reload
-```
-
-## 必要パッケージのインストール
-Seleniumなどを動かすのに必要なパッケージ群のインストール
-```
-$ sudo apt install build-base libffi-dev libpq-dev python3-dev libnss3-dev libatk1.0-0 libatk-bridge2.0-0 libcups2-dev libxkbcommon-x11-0 libgbm1 libpango-1.0-0 libcairo2 libasound2
+実行:
+```bash
+python main.py
 ```
 
-## chromedriver のインストール
-このようなページから  
-https://chromedriver.chromium.org/home  
-このようなファイルをDLして使っても良い  
-https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.109/linux64/chrome-linux64.zip  
-https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.109/linux64/chromedriver-linux64.zip  
-  
-コンソールにhtmlが表示されれば成功!  
-```
-$ ./chrome --headless --disable-gpu --dump-dom http://the-menz.com/
-```
-  
-面倒ならサクッとapt install
-```
-$ apt install chromium chromium-chromedriver
-```
-  
-# Dockerでインストール
-インストール自分でやるのめんどくさいなーって場合は手っ取り早く Docker で起動しちゃおう！  
-因みにM1 Macとかだとダメなはず、インテル入ってる？
-```
-$ docker compose up
-```
-
-# Alembic インストールメモ
-インストール
-```
-$ pip install alembic
-```
-
-初期化
-```
-$ alembic init alembic
-```
-
-マイグレーション
-```
-$ alembic revision -m "create games table"
-```
-
-alembic/versions/ 配下に新規作成されたファイルを編集
-```
-$ alembic upgrade head
-```
-
-
-自分で適当にサービス化しよう！
-```
-$ uvicorn sql_app.main:app --reload
-```
-
+## GitHub Actions
+- 月水金 JST 12:00 に自動実行（手動実行も可）
+- `DISCORD_WEBHOOK_URL` を Repository Secrets に登録すること
+- 実行後、DB に変更があればリポジトリに自動コミットされる

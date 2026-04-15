@@ -1,105 +1,42 @@
-#!/usr/bin/python3.10
-# -*- coding: utf8 -*-
+"""Amazon Gaming 無料ゲーム取得 (Playwright)"""
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-
-from time import sleep
-
-from bs4 import BeautifulSoup
-import re
-
-import requests
-import json
-
-from datetime import datetime
-
-import os
-import sys
+from playwright.sync_api import sync_playwright
 
 
-# ドメインチェック
-if len(sys.argv) >= 2:
-    DISCORD_TOKEN = sys.argv[1]
-elif os.path.isfile('./DOMAIN'):
-    with open('./DOMAIN', 'r') as f:
-        DISCORD_TOKEN = f.read().splitlines()[0]
-else:
-    print('DOMAIN not found')
-    sys.exit(1)
+def fetch_free_games() -> list[dict]:
+    games = []
 
-# selenium初期化
-options = Options()
-options.add_argument('--no-sandbox')
-options.add_argument('--headless')
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto("https://gaming.amazon.com/home", wait_until="networkidle", timeout=30_000)
 
-#CHROME_BIN = "./chrome-linux64/chrome"
-#options.binary_location = CHROME_BIN
-#CHROME_DRIVER = "./chromedriver-linux64/chromedriver"
-#service = Service(executable_path=CHROME_DRIVER)
-#driver = webdriver.Chrome(service=service, options=options)
+        cards = page.query_selector_all('[data-a-target="offer-list-FGWP_FULL"] .item-card__action')
 
-driver = webdriver.Chrome(options=options)
+        for card in cards:
+            link = card.query_selector("a")
+            if not link:
+                continue
 
-# ターゲット♡
-driver.get('https://gaming.amazon.com/home')
-sleep(5)
+            href = link.get_attribute("href")
+            if not href:
+                continue
 
-# スクショ
-#driver.set_window_size(1280,1024)
-#driver.save_screenshot('screenshot.png')
+            url = "https://gaming.amazon.com" + href.split("?")[0]
 
-# BSさん出番です
-soup = BeautifulSoup(driver.page_source, 'lxml')
-# ダータゲームリスト取得
-ul_tag = soup.find('ul', attrs={'class':re.compile('grid-carousel__content')})
+            title_el = card.query_selector("h3")
+            name = title_el.inner_text().strip() if title_el else "Unknown"
 
-_game_list=[]
-_game_dict={}
-for li_tag in ul_tag.find_all('li'):
-    # ガッチャ！
-    url = 'https://gaming.amazon.com' + li_tag.find('a').get('href').split('?')[0]
-    _game_dict['url'] = url
+            date_el = card.query_selector("time")
+            deadline = date_el.get_attribute("datetime") if date_el else None
 
-    # ダータゲーム詳細画面から配布終了日(deadline)を取ってくる、ゲームリストに含めておけよメンドくせーな！
-    driver.get(url)
-    sleep(3)
+            games.append({"url": url, "name": name, "platform": "amazon", "deadline": deadline})
 
-    # スクショ
-#    driver.set_window_size(1280,1024)
-#    driver.save_screenshot('screenshot.png')
+        browser.close()
 
-    # 日付取る
-    detail_soup = BeautifulSoup(driver.page_source, 'lxml')
-    _date = detail_soup.find('div', {'class': 'availability-date'}).find('span', {'class': 'tw-amazon-ember tw-amazon-ember-bold tw-bold tw-font-size-6'}).get_text()
-    date = datetime.strptime(_date, '%b %d, %Y').date()
-    _game_dict['date'] = str(date)
-    # ゲーム名
-    _name = detail_soup.find('div', {'data-a-target': 'buy-box_title'}).find('h1').text
-    _game_dict['name'] = _name
+    return games
 
-    _game_list.append(_game_dict.copy())
 
-    print(url)
-    print(date)
-    print(_name)
-
-# お掃除
-driver.close()
-driver.quit()
-
-# 速報くんに連絡だ！
-for g in _game_list:
-    data = json.dumps({
-        'url'      : g['url'],
-        'deadline' : g['date'],
-        'name'     : g['name'],
-        'platform' : 'amazon',
-        'is_sent'  : False
-    })
-    result = requests.post("http://" + DOMAIN + "/games/", data)
-    print(result)
-
-# バグでプロセスが死に切らない時の対応
-#kill `ps ax | grep chromium | awk '{print $1}'`
+if __name__ == "__main__":
+    for g in fetch_free_games():
+        print(g)
