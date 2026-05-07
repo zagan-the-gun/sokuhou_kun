@@ -2,7 +2,7 @@ name: 速報くん
 
 on:
   schedule:
-    - cron: '0 3 * * 1,3,5'  # 月水金 JST 12:00
+    - cron: '47 2 * * 1,3,5'  # 月水金 JST 11:47（毎時0分は混雑で遅延しやすいためずらす。実際の起動はJST 12:00前後）
   workflow_dispatch:       # 手動実行も可能
 
 permissions:
